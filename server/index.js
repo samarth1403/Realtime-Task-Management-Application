@@ -1,8 +1,11 @@
+import express from "express";
 import bodyparser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
-import express from "express";
 import morgan from "morgan";
+import dbconnect from "./Config/dbConnect.js";
+import authRouter from "./Routes/authRoute.js";
+import taskRoute from "./Routes/taskRoute.js";
 
 const app = express();
 
@@ -16,13 +19,18 @@ app.use(bodyparser.urlencoded({ limit: "30mb", extended: true }));
 //cors-setup
 app.use(cors());
 
+//For refreshing the token
+// app.use(cookieParser());
+
 //Using Morgan
 app.use(morgan("dev"));
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 
-//DB Connection
-// dbconnect();
+dbconnect();
+
+app.use("/user", authRouter);
+app.use("/task", taskRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is Running at PORT : ${PORT}`);
