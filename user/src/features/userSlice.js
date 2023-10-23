@@ -102,6 +102,7 @@ const userSlice = createSlice({
       state.isLoading = true;
     });
     builder.addCase(loginUser.fulfilled, (state, action) => {
+      console.log(action.payload);
       state.isLoading = false;
       state.isSuccess = true;
       state.isError = false;
@@ -113,7 +114,7 @@ const userSlice = createSlice({
         localStorage.setItem("user", JSON.stringify(action.payload?.userData));
         toast.success(`Welcome ${action.payload?.userData?.name}`);
       }
-      if (state.res?.success === false && state.res?.message !== "") {
+      if (state.res?.success === false) {
         state.user = null;
         toast.error("Invalid Credentials");
       }
