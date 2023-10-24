@@ -12,6 +12,16 @@ const loginUser = async (data) => {
   return response.data;
 };
 
+const getAllUsers = async (data) => {
+  const response = await axios.get(`${base_url}/user/get/all-users`, {
+    headers: {
+      Authorization: `Bearer ${data?.Token !== null ? data?.Token : ""}`,
+      Accept: "application/json",
+    },
+  });
+  return response.data;
+};
+
 const getUser = async (data) => {
   const response = await axios.get(`${base_url}/user/get`, {
     headers: {
@@ -24,7 +34,6 @@ const getUser = async (data) => {
     response.data?.res?.success === false &&
     data?.Token !== undefined
   ) {
-    toast.error("Session Expired , Please Login Again");
     return false;
   } else {
     return response.data;
@@ -46,11 +55,23 @@ const updateUserProfile = async (data) => {
     response.data?.res?.unauthorized === true &&
     response.data?.res?.success === false
   ) {
-    toast.error("Session Expired , Please Login Again");
     return false;
   } else {
     return response.data;
   }
+};
+
+const getAllNotifications = async (data) => {
+  const response = await axios.get(
+    `${base_url}/user/all-notifications/${data?.UserId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${data?.Token !== null ? data?.Token : ""}`,
+        Accept: "application/json",
+      },
+    }
+  );
+  return response.data;
 };
 
 const userService = {
@@ -58,6 +79,8 @@ const userService = {
   loginUser,
   getUser,
   updateUserProfile,
+  getAllUsers,
+  getAllNotifications,
 };
 
 export default userService;

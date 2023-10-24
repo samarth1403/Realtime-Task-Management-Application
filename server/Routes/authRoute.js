@@ -9,6 +9,8 @@ import {
   deleteAUserController,
   blockAUserController,
   unblockAUserController,
+  getNotificationsController,
+  createNotificationController,
 } from "../Controllers/authControllers.js";
 import {
   authMiddleware,
@@ -21,12 +23,7 @@ authRouter.post("/register-user", createUserController);
 authRouter.post("/login-user", loginUserController);
 authRouter.post("/admin-login", loginAdminController);
 // authRouter.get("/logout", logoutUserController);
-authRouter.get(
-  "/get/all-users",
-  authMiddleware,
-  isAdminMiddleware,
-  getAllUsersController
-);
+authRouter.get("/get/all-users", authMiddleware, getAllUsersController);
 authRouter.get(
   "/get/:id",
   authMiddleware,
@@ -48,6 +45,17 @@ authRouter.put(
   authMiddleware,
   isAdminMiddleware,
   unblockAUserController
+);
+
+authRouter.get(
+  "/all-notifications/:UserId",
+  authMiddleware,
+  getNotificationsController
+);
+authRouter.post(
+  "/create-notification",
+  authMiddleware,
+  createNotificationController
 );
 
 export default authRouter;

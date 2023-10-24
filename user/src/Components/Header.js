@@ -4,6 +4,7 @@ import Navlink from "./ReusableComponents/Navlink";
 import person from "../images/person.svg";
 import { BsFillPersonFill } from "react-icons/bs";
 import { BiLogOutCircle } from "react-icons/bi";
+import { AiFillHome } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -20,7 +21,6 @@ const Header = () => {
   const handleLogout = () => {
     localStorage.clear();
     window.location.pathname = "/";
-    navigate("/");
     toast.info("Logged Out Successfully");
   };
 
@@ -42,6 +42,13 @@ const Header = () => {
           </Link>
         </div>
         <div className="flex flex-row flex-no-wrap justify-evenly items-center mb-2">
+          <Link
+            to={"/"}
+            className="my-2 mx-4 min-[320px]:inline-block sm:inline-block md:hidden lg:hidden xl:hidden"
+          >
+            <AiFillHome size={"30px"} />
+          </Link>
+          <Link to="/notifications">Notification</Link>
           <Link
             to={user === null ? "/signin" : "/my-profile"}
             className="my-2 mx-4"

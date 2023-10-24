@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainLayout from "./Components/MainLayout";
@@ -11,10 +11,31 @@ import SigninPage from "./Pages/SigninPage";
 import SignupPage from "./Pages/SignupPage";
 import ProfilePage from "./Pages/ProfilePage";
 import { PrivateRoute } from "./Routing/PrivateRoute";
-import MyTaskList from "./Components/MyTaskComponents/MyTaskList";
 import MyTaskDetail from "./Components/MyTaskComponents/MyTaskDetail";
+import ViewTasksPage from "./Pages/ViewTasksPage";
+import ViewAllTasks from "./Components/ViewTasksComponent/ViewAllTasks";
+import ViewAllStausTasks from "./Components/ViewTasksComponent/ViewAllStausTasks";
+import ViewAllPriorityTasks from "./Components/ViewTasksComponent/ViewAllPriorityTasks";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllTasks } from "./features/taskSlice";
+import ViewAllMyTasks from "./Components/ViewTasksComponent/ViewAllMyTasks";
+import UpdateTask from "./Components/UpdateTask/UpdateTask";
+import { getAllUsers } from "./features/userSlice";
+
+import socketIO from "socket.io-client";
+const socket = socketIO.connect("http://localhost:3001");
 
 const App = () => {
+  const dispatch = useDispatch();
+  const { Token } = useSelector((state) => {
+    return state.user;
+  });
+
+  useEffect(() => {
+    dispatch(getAllTasks({ Token: Token }));
+    dispatch(getAllUsers({ Token }));
+  }, [Token]);
+
   return (
     <Router>
       <Routes>
@@ -39,19 +60,19 @@ const App = () => {
               index
               element={
                 <PrivateRoute>
-                  <MyTaskList />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="task"
-              element={
-                <PrivateRoute>
-                  <MyTaskDetail />
+                  <ViewAllMyTasks />
                 </PrivateRoute>
               }
             />
           </Route>
+          <Route
+            path="task/:id"
+            element={
+              <PrivateRoute>
+                <MyTaskDetail />
+              </PrivateRoute>
+            }
+          />
           <Route
             path="dashboard"
             element={
@@ -65,6 +86,14 @@ const App = () => {
             element={
               <PrivateRoute>
                 <CreateTaskPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="update-task/:id"
+            element={
+              <PrivateRoute>
+                <UpdateTask />
               </PrivateRoute>
             }
           />
@@ -86,6 +115,39 @@ const App = () => {
               </PrivateRoute>
             }
           />
+          <Route
+            path="all-tasks"
+            element={
+              <PrivateRoute>
+                <ViewTasksPage />
+              </PrivateRoute>
+            }
+          >
+            <Route
+              index
+              element={
+                <PrivateRoute>
+                  <ViewAllTasks />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path=":status"
+              element={
+                <PrivateRoute>
+                  <ViewAllStausTasks />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="priority/:priority"
+              element={
+                <PrivateRoute>
+                  <ViewAllPriorityTasks />
+                </PrivateRoute>
+              }
+            />
+          </Route>
         </Route>
       </Routes>
     </Router>

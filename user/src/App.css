@@ -27,12 +27,6 @@ th {
   background-color: #f2f2f2;
 }
 
-input[id="creationDate"]:before {
-  color: rgb(20, 20, 20);
-  content: attr(placeholder) !important;
-  margin-right: 72px;
-}
-
 ::placeholder {
   color: rgb(20, 20, 20) !important;
   opacity: 1;
@@ -41,10 +35,4 @@ input[id="creationDate"]:before {
 ::-ms-input-placeholder {
   /* Edge 12 -18 */
   color: rgb(20, 20, 20);
-}
-
-input[id="dueDate"]:before {
-  color: rgb(20, 20, 20);
-  content: attr(placeholder) !important;
-  margin-right: 112px;
 }

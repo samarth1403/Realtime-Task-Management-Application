@@ -60,18 +60,71 @@ export const updateUserProfile = createAsyncThunk(
   }
 );
 
+export const getAllNotifications = createAsyncThunk(
+  "user/all-notifications",
+  async (data, thunkAPI) => {
+    try {
+      return await userService.getAllNotifications(data);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 export const logoutUser = createAction("logout/user");
-export const giveCameraAccess = createAction("camera/access");
-export const giveAudioAccess = createAction("audio/access");
-export const setCameraStream = createAction("camera/stream");
-export const startNewRecording = createAction("recording/start");
-export const stopNewRecording = createAction("recording/stop");
+
+export const getAllUsers = createAsyncThunk(
+  "user/all-users",
+  async (data, thunkAPI) => {
+    try {
+      return await userService.getAllUsers(data);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    builder.addCase(getAllUsers.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getAllUsers.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.isError = false;
+      state.allUsers = action.payload?.allUsers;
+      state.res = action.payload?.res;
+      console.log(action.payload?.allUsers);
+    });
+    builder.addCase(getAllUsers.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+      state.message = action.error;
+    });
+
+    builder.addCase(getAllNotifications.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getAllNotifications.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.isError = false;
+      state.allNotifications = action.payload?.allNotifications;
+      state.res = action.payload?.res;
+      console.log(action.payload?.allUsers);
+    });
+    builder.addCase(getAllNotifications.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+      state.message = action.error;
+    });
+
     builder.addCase(registerUser.pending, (state) => {
       state.isLoading = true;
     });

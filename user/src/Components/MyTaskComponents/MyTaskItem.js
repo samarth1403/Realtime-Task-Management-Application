@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 const MyTaskItem = ({ task }) => {
   const navigate = useNavigate();
+  let dueDate = new Date(task?.dueDate).toDateString();
   return (
     <div>
       <div className="lg:hidden shadow-md shadow-blue-500/50 border border-gray-300 rounded-md min-[320px]:w-[280px] sm:w-[300px] p-4 my-2 flex flex-col flex-no-wrap justify-center items-center m-4">
@@ -14,7 +15,7 @@ const MyTaskItem = ({ task }) => {
           <p className="font-roboto text-sm font-normal py-2">
             Due date -{" "}
             <span className="font-roboto text-sm font-medium py-2">
-              {task.dueDate}
+              {dueDate}
             </span>
           </p>
           <p className="font-roboto text-sm font-normal py-2">
@@ -29,7 +30,7 @@ const MyTaskItem = ({ task }) => {
               {task.priority}
             </span>
           </p>
-          <Link to={"/my-tasks/task"}>
+          <Link to={`/task/${task._id}`}>
             <BsFillEyeFill className="text-blue-500 mx-2" size={"25px"} />
           </Link>
         </div>

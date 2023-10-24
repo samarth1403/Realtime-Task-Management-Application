@@ -1,24 +1,31 @@
 import React, { useEffect } from "react";
 import Input from "../ReusableComponents/Input";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-import Spinner from "../ReusableComponents/Spinner";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { createATask, getAllTasks } from "../../features/taskSlice";
-import { getAllUsers } from "../../features/userSlice";
-import { socket } from "../../socket";
+import { createATask, getTask, updateTask } from "../../features/taskSlice";
+import Spinner from "../ReusableComponents/Spinner";
 
-const CreateTask = () => {
+const UpdateTask = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const { isLoading, res, Token, allUsers, user, isSuccess } = useSelector(
+  const { isLoading, res, Token, allUsers, isSuccess, user } = useSelector(
     (state) => {
       return state.user;
     }
   );
+  const location = useLocation();
+  const TaskId = location.pathname.split("/")[2];
+
+  useEffect(() => {
+    dispatch(getTask({ Token, TaskId }));
+  }, [TaskId]);
+
+  const { gotTask } = useSelector((state) => {
+    return state.task;
+  });
 
   let schema = Yup.object().shape({
     title: Yup.string().required("Title is Required"),
@@ -31,44 +38,47 @@ const CreateTask = () => {
     dueDate: Yup.date().required("Due date is Required"),
   });
 
+  const correctDateFormat = (inputDate) => {
+    const [year, month, day] = inputDate.split("-");
+    return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+  };
+  const changeDateFormat = (date) => {
+    const newDate = new Date(date)?.toLocaleDateString();
+    const [month, day, year] = newDate.split("/");
+    const inputDate = [year, month, day].join("-");
+    return correctDateFormat(inputDate);
+  };
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      title: "",
-      description: "",
-      assignee: "",
-      creator: "",
-      priority: "",
-      status: "",
-      creationDate: "",
-      dueDate: "",
+      title: gotTask?.title || "",
+      description: gotTask?.description || "",
+      assignee: gotTask?.assignee?.name || "",
+      creator: gotTask?.assignee?.creator || "",
+      priority: gotTask?.priority || "",
+      status: gotTask?.status || "",
+      creationDate: changeDateFormat(gotTask?.creationDate) || "",
+      dueDate: changeDateFormat(gotTask?.dueDate) || "",
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      dispatch(createATask({ body: values, Token: Token }));
-      socket.emit("notification", {
-        user: user?._id,
-        message: values?.title,
-        date: values?.creationDate,
-      });
-      setTimeout(() => {
-        navigate("/");
-        dispatch(getAllTasks({ Token }));
-      }, 500);
+      dispatch(updateTask({ body: values, Token: Token, TaskId }));
       formik.resetForm();
     },
   });
+
   return (
     <div>
       {isLoading && (
-        <div className="flex justify-center my-8">
+        <div className="flex jusfity-center my-8">
           <Spinner />
         </div>
       )}
       {!isLoading && (
         <div className="flex flex-col flex-no-wrap justify-center items-center">
           <p className="font-roboto font-medium text-2xl mx-2 mb-2 mt-4">
-            Create Task
+            Update Task
           </p>
           <form
             className="my-4 flex flex-col flex-no-wrap justify-center items-center min-[320px]:w-[280px] sm:w-[400px] md:w-[580px] rounded-[25px] pt-6 mx-4"
@@ -124,8 +134,8 @@ const CreateTask = () => {
                   onChange={formik.handleChange("assignee")}
                   onBlur={formik.handleBlur("assignee")}
                 >
-                  <option defaultValue={""} value="">
-                    Select Assignee
+                  <option defaultValue={gotTask?.assignee?.name}>
+                    {gotTask?.assignee?.name}
                   </option>
                   {allUsers?.map((user) => {
                     return (
@@ -151,7 +161,9 @@ const CreateTask = () => {
                   onChange={formik.handleChange("creator")}
                   onBlur={formik.handleBlur("creator")}
                 >
-                  <option value="">Select Creator</option>
+                  <option defaultValue={gotTask?.creator?.name}>
+                    {gotTask?.creator?.name}
+                  </option>
                   <option value={user?._id}>{user?.name}</option>
                 </select>
                 <div className="text-black font-bold text-lg text-center">
@@ -275,7 +287,7 @@ const CreateTask = () => {
                 style={{ boxShadow: "8px 8px 4px #0D103C" }}
                 className="bg-[#fff] w-[100px] h-[60px] font-roboto font-bold  text-[#0D103C] text-xl rounded-[20px] px-4 mx-4 mt-4 mb-4"
               >
-                Create
+                Update
               </button>
             </div>
           </form>
@@ -285,4 +297,4 @@ const CreateTask = () => {
   );
 };
 
-export default CreateTask;
+export default UpdateTask;

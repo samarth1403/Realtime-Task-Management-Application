@@ -27,7 +27,7 @@ const taskSchema = new mongoose.Schema(
     },
     priority: {
       type: String,
-      enum: ["P1", "P2", "p3"],
+      enum: ["P1", "P2", "P3"],
     },
     creationDate: {
       type: Date,
