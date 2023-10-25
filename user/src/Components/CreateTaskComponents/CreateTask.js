@@ -43,8 +43,8 @@ const CreateTask = () => {
     onSubmit: (values) => {
       dispatch(createATask({ body: values, Token: Token }));
       socket.emit("notification", {
-        user: user?._id,
-        message: `${values?.title} is Assigned to You by ${values?.creator}`,
+        user: values?.assignee,
+        message: `${values?.title} is Assigned to You by ${user?.name}`,
         date: new Date(values?.creationDate).toDateString(),
       });
       setTimeout(() => {

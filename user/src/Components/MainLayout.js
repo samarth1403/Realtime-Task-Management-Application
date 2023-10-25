@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Header from "./Header";
 import { ToastContainer } from "react-toastify";
 
-const MainLayout = () => {
+const MainLayout = ({ isShowBell }) => {
   return (
     <div>
       <ToastContainer
@@ -19,7 +19,7 @@ const MainLayout = () => {
         theme="colored"
         className="text-xl"
       />
-      <Header />
+      <Header isShowBell={isShowBell} />
       <Outlet />
     </div>
   );

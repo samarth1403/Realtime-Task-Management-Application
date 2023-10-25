@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
@@ -25,6 +25,7 @@ import ViewAllAssigneeTasks from "./Components/ViewTasksComponent/ViewAllAssigne
 
 const App = () => {
   const dispatch = useDispatch();
+  const [isShowBell, setIsShowBell] = useState(false);
   const { Token } = useSelector((state) => {
     return state.user;
   });
@@ -41,7 +42,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<MainLayout />}>
+        <Route path="/" element={<MainLayout isShowBell={isShowBell} />}>
           <Route
             index
             element={
@@ -103,7 +104,7 @@ const App = () => {
             path="notifications"
             element={
               <PrivateRoute>
-                <NotificationPage />
+                <NotificationPage setIsShowBell={setIsShowBell} />
               </PrivateRoute>
             }
           />

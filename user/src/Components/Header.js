@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const Header = () => {
+const Header = ({ isShowBell }) => {
   const { user } = useSelector((state) => {
     return state.user;
   });
@@ -42,6 +42,16 @@ const Header = () => {
             <AiFillHome size={"30px"} />
           </Link>
           <Link to="/notifications" className="my-2 mx-4">
+            {isShowBell && (
+              <div
+                style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: 5,
+                  backgroundColor: "red",
+                }}
+              ></div>
+            )}
             <BsFillBellFill size={"25px"} />
           </Link>
           <Link

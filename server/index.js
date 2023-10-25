@@ -13,7 +13,6 @@ import NotificationModel from "./Models/notificationModel.js";
 const app = express();
 
 //dotenv
-const notificationData = [];
 dotenv.config();
 
 //bodyparser Setup
@@ -21,21 +20,6 @@ app.use(bodyparser.json({ limit: "30mb", extended: true }));
 app.use(bodyparser.urlencoded({ limit: "30mb", extended: true }));
 
 //cors-setup
-const allowedOrigins = ["https://project-flow-vwv4.onrender.com"];
-
-// Set up CORS with allowed origins
-// app.use(
-//   cors({
-//     origin: function (origin, callback) {
-//       if (!origin || allowedOrigins.includes(origin)) {
-//         callback(null, true);
-//       } else {
-//         callback(new Error("Not allowed by CORS"));
-//       }
-//     },
-//   })
-// );
-
 const corsOptions = {
   origin: "*",
 };
@@ -50,7 +34,7 @@ app.use(morgan("dev"));
 const server = http.createServer(app);
 const socketIO = new Server(server, {
   cors: {
-    origin: "https://project-flow-vwv4.onrender.com",
+    origin: "http://localhost:3000",
   },
 });
 
@@ -64,11 +48,6 @@ socketIO.on("connection", (socket) => {
     const notifications = await NotificationModel.find({
       user: data?.user,
     }).populate("user");
-
-    console.log("notifications", notifications);
-
-    notificationData.push(...notifications);
-
     socketIO.emit("notificationResponse", notifications);
   });
   socket.on("disconnect", () => {
