@@ -1,20 +1,13 @@
-import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
-import Navlink from "./ReusableComponents/Navlink";
-import person from "../images/person.svg";
-import { BsFillPersonFill, BsFillBellFill } from "react-icons/bs";
-import { BiLogOutCircle } from "react-icons/bi";
+import React from "react";
 import { AiFillHome } from "react-icons/ai";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { BiLogOutCircle } from "react-icons/bi";
+import { BsFillBellFill, BsFillPersonFill } from "react-icons/bs";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const Header = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { Token } = useSelector((state) => state.user);
-
-  const { user, userData } = useSelector((state) => {
+  const { user } = useSelector((state) => {
     return state.user;
   });
 

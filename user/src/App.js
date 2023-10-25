@@ -1,30 +1,27 @@
 import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainLayout from "./Components/MainLayout";
+import MyTaskDetail from "./Components/MyTaskComponents/MyTaskDetail";
+import UpdateTask from "./Components/UpdateTask/UpdateTask";
+import ViewAllMyTasks from "./Components/ViewTasksComponent/ViewAllMyTasks";
+import ViewAllPriorityTasks from "./Components/ViewTasksComponent/ViewAllPriorityTasks";
+import ViewAllStausTasks from "./Components/ViewTasksComponent/ViewAllStausTasks";
+import ViewAllTasks from "./Components/ViewTasksComponent/ViewAllTasks";
+import { getAllTasks } from "./features/taskSlice";
+import { getAllUsers } from "./features/userSlice";
 import CreateTaskPage from "./Pages/CreateTaskPage";
 import DashboardPage from "./Pages/DashboardPage";
 import HomePage from "./Pages/HomePage";
 import MyTaskPage from "./Pages/MyTaskPage";
 import NotificationPage from "./Pages/NotificationPage";
+import ProfilePage from "./Pages/ProfilePage";
 import SigninPage from "./Pages/SigninPage";
 import SignupPage from "./Pages/SignupPage";
-import ProfilePage from "./Pages/ProfilePage";
-import { PrivateRoute } from "./Routing/PrivateRoute";
-import MyTaskDetail from "./Components/MyTaskComponents/MyTaskDetail";
 import ViewTasksPage from "./Pages/ViewTasksPage";
-import ViewAllTasks from "./Components/ViewTasksComponent/ViewAllTasks";
-import ViewAllStausTasks from "./Components/ViewTasksComponent/ViewAllStausTasks";
-import ViewAllPriorityTasks from "./Components/ViewTasksComponent/ViewAllPriorityTasks";
-import { useDispatch, useSelector } from "react-redux";
-import { getAllTasks } from "./features/taskSlice";
-import ViewAllMyTasks from "./Components/ViewTasksComponent/ViewAllMyTasks";
-import UpdateTask from "./Components/UpdateTask/UpdateTask";
-import { getAllUsers } from "./features/userSlice";
-
-import socketIO from "socket.io-client";
+import { PrivateRoute } from "./Routing/PrivateRoute";
 import ViewAllAssigneeTasks from "./Components/ViewTasksComponent/ViewAllAssigneeTasks";
-const socket = socketIO.connect("http://localhost:3001");
 
 const App = () => {
   const dispatch = useDispatch();

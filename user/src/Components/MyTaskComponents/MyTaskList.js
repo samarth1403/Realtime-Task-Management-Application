@@ -1,31 +1,9 @@
 import React from "react";
-import MyTaskItem from "./MyTaskItem";
 import { BsFillEyeFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
+import MyTaskItem from "./MyTaskItem";
 
 const MyTaskList = ({ taskListArray }) => {
-  // const taskListArray = [
-  //   {
-  //     title: "Task1",
-  //     description: "Task1 Description",
-  //     assignee: "Admin",
-  //     creator: "Me",
-  //     priority: "P1",
-  //     status: "Open",
-  //     creationDate: "2023-10-23",
-  //     dueDate: "2023-10-26",
-  //   },
-  //   {
-  //     title: "Task2",
-  //     description: "Task2 Description",
-  //     assignee: "Admin",
-  //     creator: "Me",
-  //     priority: "P2",
-  //     status: "Open",
-  //     creationDate: "2023-10-25",
-  //     dueDate: "2023-10-27",
-  //   },
-  // ];
   const navigate = useNavigate();
 
   const TaskList = taskListArray?.map((task) => {

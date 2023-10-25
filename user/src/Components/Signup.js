@@ -1,17 +1,16 @@
-import React, { useEffect } from "react";
-import Spinner from "./ReusableComponents/Spinner";
-import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-import * as Yup from "yup";
-import Input from "./ReusableComponents/Input";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import * as Yup from "yup";
 import { registerUser } from "../features/userSlice";
-import { toast } from "react-toastify";
+import Input from "./ReusableComponents/Input";
+import Spinner from "./ReusableComponents/Spinner";
 
 const Signup = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isLoading, user, registeredUser, res } = useSelector((state) => {
+  const { isLoading, registeredUser, res } = useSelector((state) => {
     return state.user;
   });
   let schema = Yup.object().shape({

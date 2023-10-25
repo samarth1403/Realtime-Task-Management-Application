@@ -1,6 +1,5 @@
-import { base_url } from "../utils/base_url";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { base_url } from "../utils/base_url";
 
 const registerUser = async (userData) => {
   const response = await axios.post(`${base_url}/user/register-user`, userData);

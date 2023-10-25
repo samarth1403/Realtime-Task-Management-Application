@@ -1,5 +1,4 @@
 import axios from "axios";
-import { toast } from "react-toastify";
 import { base_url } from "../utils/base_url";
 
 const createATask = async (data) => {

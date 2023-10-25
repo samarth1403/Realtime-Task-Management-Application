@@ -1,9 +1,8 @@
 import React from "react";
 import { BsFillEyeFill } from "react-icons/bs";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const MyTaskItem = ({ task }) => {
-  const navigate = useNavigate();
   let dueDate = new Date(task?.dueDate).toDateString();
   return (
     <div>

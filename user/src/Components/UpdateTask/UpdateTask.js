@@ -1,21 +1,17 @@
-import React, { useEffect } from "react";
-import Input from "../ReusableComponents/Input";
-import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-import * as Yup from "yup";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import { createATask, getTask, updateTask } from "../../features/taskSlice";
+import { useLocation } from "react-router-dom";
+import * as Yup from "yup";
+import { getTask, updateTask } from "../../features/taskSlice";
+import Input from "../ReusableComponents/Input";
 import Spinner from "../ReusableComponents/Spinner";
 
 const UpdateTask = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { isLoading, res, Token, allUsers, isSuccess, user } = useSelector(
-    (state) => {
-      return state.user;
-    }
-  );
+  const { isLoading, Token, allUsers, user } = useSelector((state) => {
+    return state.user;
+  });
   const location = useLocation();
   const TaskId = location.pathname.split("/")[2];
 

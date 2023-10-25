@@ -1,14 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import NotificationItem from "../Components/NotificationComponents/NotificationItem";
 import Spinner from "../Components/ReusableComponents/Spinner";
-import { getAllNotifications } from "../features/userSlice";
 import { socket } from "../socket";
 import { base_url } from "../utils/base_url";
 
 const NotificationPage = () => {
-  const dispatch = useDispatch();
   const [allNotifications, setAllNotifications] = useState([]);
   const { user, Token, isLoading } = useSelector((state) => {
     return state.user;
@@ -32,25 +30,21 @@ const NotificationPage = () => {
 
   useEffect(() => {}, [allNotifications]);
   useEffect(() => {
-    const apidata = fetchNotifications();
+    //const apidata = fetchNotifications();
     socket.on("notificationResponse", (data) =>
       setAllNotifications([...allNotifications, data])
     );
   }, []);
   console.log("All NOti", allNotifications);
 
-  // const { allNotifications } = useSelector((state) => {
-  //   return state.user;
+  // const notificationListArray = allNotifications?.map((notification) => {
+  //   return (
+  //     <div key={notification?._id}>
+  //       <p className="my-2 text-lg">{notification?.message}</p>
+  //       <p></p>
+  //     </div>
+  //   );
   // });
-
-  const notificationListArray = allNotifications?.map((notification) => {
-    return (
-      <div key={notification?._id}>
-        <p className="my-2 text-lg">{notification?.message}</p>
-        <p></p>
-      </div>
-    );
-  });
   const NotificationList = allNotifications?.map((notification) => {
     return (
       <NotificationItem

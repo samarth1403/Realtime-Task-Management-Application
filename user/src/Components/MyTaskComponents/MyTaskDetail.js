@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { BiEdit } from "react-icons/bi";
+import { useFormik } from "formik";
+import React, { useEffect } from "react";
 import { AiFillDelete } from "react-icons/ai";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { BiEdit } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import * as Yup from "yup";
 import {
   deleteTask,
   getAllTasks,
@@ -10,8 +12,6 @@ import {
   updateTask,
 } from "../../features/taskSlice";
 import Spinner from "../ReusableComponents/Spinner";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 
 const MyTaskDetail = () => {
   const dispatch = useDispatch();
@@ -22,11 +22,9 @@ const MyTaskDetail = () => {
   const { Token, user } = useSelector((state) => {
     return state.user;
   });
-  const { gotTask, isLoading, deletedTask, isSuccess } = useSelector(
-    (state) => {
-      return state.task;
-    }
-  );
+  const { gotTask, isLoading, isSuccess } = useSelector((state) => {
+    return state.task;
+  });
 
   let schema = Yup.object().shape({
     priority: Yup.string().required("Priority is Required"),

@@ -1,24 +1,20 @@
-import React, { useEffect } from "react";
-import Input from "../ReusableComponents/Input";
-import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-import Spinner from "../ReusableComponents/Spinner";
-import * as Yup from "yup";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import * as Yup from "yup";
 import { createATask, getAllTasks } from "../../features/taskSlice";
-import { getAllUsers } from "../../features/userSlice";
 import { socket } from "../../socket";
+import Input from "../ReusableComponents/Input";
+import Spinner from "../ReusableComponents/Spinner";
 
 const CreateTask = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { isLoading, res, Token, allUsers, user, isSuccess } = useSelector(
-    (state) => {
-      return state.user;
-    }
-  );
+  const { isLoading, Token, allUsers, user } = useSelector((state) => {
+    return state.user;
+  });
 
   let schema = Yup.object().shape({
     title: Yup.string().required("Title is Required"),

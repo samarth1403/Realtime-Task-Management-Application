@@ -1,12 +1,11 @@
-import React, { Dispatch, useEffect } from "react";
-import Spinner from "./ReusableComponents/Spinner";
-import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-import * as Yup from "yup";
-import Input from "./ReusableComponents/Input";
-import { loginUser, logoutUser } from "../features/userSlice";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
+import * as Yup from "yup";
+import { loginUser } from "../features/userSlice";
+import Input from "./ReusableComponents/Input";
+import Spinner from "./ReusableComponents/Spinner";
 
 const Signin = () => {
   const dispatch = useDispatch();
