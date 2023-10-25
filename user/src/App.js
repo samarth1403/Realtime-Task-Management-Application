@@ -23,6 +23,7 @@ import UpdateTask from "./Components/UpdateTask/UpdateTask";
 import { getAllUsers } from "./features/userSlice";
 
 import socketIO from "socket.io-client";
+import ViewAllAssigneeTasks from "./Components/ViewTasksComponent/ViewAllAssigneeTasks";
 const socket = socketIO.connect("http://localhost:3001");
 
 const App = () => {
@@ -144,6 +145,14 @@ const App = () => {
               element={
                 <PrivateRoute>
                   <ViewAllPriorityTasks />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="assignee/:assigneeId"
+              element={
+                <PrivateRoute>
+                  <ViewAllAssigneeTasks />
                 </PrivateRoute>
               }
             />

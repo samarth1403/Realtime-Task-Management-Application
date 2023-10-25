@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navlink from "./ReusableComponents/Navlink";
 import person from "../images/person.svg";
-import { BsFillPersonFill } from "react-icons/bs";
+import { BsFillPersonFill, BsFillBellFill } from "react-icons/bs";
 import { BiLogOutCircle } from "react-icons/bi";
 import { AiFillHome } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
@@ -48,7 +48,9 @@ const Header = () => {
           >
             <AiFillHome size={"30px"} />
           </Link>
-          <Link to="/notifications">Notification</Link>
+          <Link to="/notifications" className="my-2 mx-4">
+            <BsFillBellFill size={"25px"} />
+          </Link>
           <Link
             to={user === null ? "/signin" : "/my-profile"}
             className="my-2 mx-4"

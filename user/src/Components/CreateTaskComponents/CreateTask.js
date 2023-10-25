@@ -48,8 +48,8 @@ const CreateTask = () => {
       dispatch(createATask({ body: values, Token: Token }));
       socket.emit("notification", {
         user: user?._id,
-        message: values?.title,
-        date: values?.creationDate,
+        message: `${values?.title} is Assigned to You by ${values?.creator}`,
+        date: new Date(values?.creationDate).toDateString(),
       });
       setTimeout(() => {
         navigate("/");

@@ -36,7 +36,7 @@ const socketIO = new Server(server, {
   },
 });
 
-//Add this before the app.get() block
+//For Socket.io in Server
 socketIO.on("connection", (socket) => {
   console.log(`⚡: ${socket.id} user just connected!`);
 
@@ -46,11 +46,12 @@ socketIO.on("connection", (socket) => {
     const notifications = await NotificationModel.find({
       user: data?.user,
     }).populate("user");
+
     console.log("notifications", notifications);
 
     notificationData.push(...notifications);
 
-    socketIO.emit("notificationResponse", notificationData);
+    socketIO.emit("notificationResponse", notifications);
   });
   socket.on("disconnect", () => {
     console.log("🔥: A user disconnected");

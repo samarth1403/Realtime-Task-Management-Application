@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DonutChart from "../Components/HomeComponents/DonutChart";
+import TasksAssigneeWise from "../Components/HomeComponents/TasksAssigneeWise";
 import { TasksPriorityWise } from "../Components/HomeComponents/TasksPriorityWise";
 import TasksStausWise from "../Components/HomeComponents/TasksStausWise";
 import TotalTasks from "../Components/HomeComponents/TotalTasks";
@@ -8,6 +9,9 @@ import TotalTasks from "../Components/HomeComponents/TotalTasks";
 const HomePage = () => {
   const { tasks } = useSelector((state) => {
     return state?.task;
+  });
+  const { allUsers } = useSelector((state) => {
+    return state?.user;
   });
 
   const openTasksArray = tasks?.filter((task) => {
@@ -49,16 +53,38 @@ const HomePage = () => {
   };
 
   const chartData = {
-    labels: ["Assignee A", "Assignee B", "Assignee C"],
+    labels: ["Open", "In Progress", "Completed"],
     datasets: [
       {
         label: "Total Tasks",
-        data: [33, 33, 33],
-        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
+        data: [
+          statusWiseTasks?.openTasksCount,
+          statusWiseTasks?.inProgressTasksCount,
+          statusWiseTasks?.completedTasksCount,
+        ],
+        backgroundColor: ["#FF5733", "#3498DB", "#4CAF50"],
       },
     ],
     hoverOffset: 4,
   };
+
+  const assigneeWiseTasks = [];
+
+  allUsers?.forEach((user) => {
+    const UserId = user?._id;
+    const userName = user?.name;
+    const userTasks = tasks?.filter((task) => {
+      return task?.assignee?._id === UserId;
+    });
+    const obj = {
+      userId: UserId,
+      userName,
+      userTasks,
+    };
+    assigneeWiseTasks.push(obj);
+  });
+
+  console.log(assigneeWiseTasks);
 
   return (
     <div className="flex flex-row flex-wrap justify-evenly items-start p-6">
@@ -66,8 +92,11 @@ const HomePage = () => {
         <TotalTasks totalTasksCount={tasks?.length} />
         <DonutChart data={chartData} />
       </div>
-      <TasksStausWise statusWiseTasks={statusWiseTasks} />
-      <TasksPriorityWise priorityWiseTasks={priorityWiseTasks} />
+      <div className="flex flex-col flex-no-wrap justify-center items-center">
+        <TasksStausWise statusWiseTasks={statusWiseTasks} />
+        <TasksPriorityWise priorityWiseTasks={priorityWiseTasks} />
+      </div>
+      <TasksAssigneeWise assigneeWiseTasks={assigneeWiseTasks} />
     </div>
   );
 };

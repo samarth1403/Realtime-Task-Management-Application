@@ -13,7 +13,7 @@ const notificationSchema = new mongoose.Schema({
   },
   date: {
     type: Date,
-    default: Date.now, // Default to the current date and time
+    required: true, // Default to the current date and time
   },
 });
 

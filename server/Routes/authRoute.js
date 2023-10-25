@@ -9,9 +9,11 @@ import {
   deleteAUserController,
   blockAUserController,
   unblockAUserController,
-  getNotificationsController,
-  createNotificationController,
 } from "../Controllers/authControllers.js";
+import {
+  createNotificationController,
+  getNotificationsController,
+} from "../Controllers/notificationControllers.js";
 import {
   authMiddleware,
   isAdminMiddleware,
