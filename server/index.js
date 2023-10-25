@@ -21,7 +21,20 @@ app.use(bodyparser.json({ limit: "30mb", extended: true }));
 app.use(bodyparser.urlencoded({ limit: "30mb", extended: true }));
 
 //cors-setup
-app.use(cors());
+const allowedOrigins = ["https://project-flow-vwv4.onrender.com"];
+
+// Set up CORS with allowed origins
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  })
+);
 
 //For refreshing the token
 // app.use(cookieParser());
