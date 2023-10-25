@@ -2,7 +2,7 @@ import generateToken from "../Config/generateToken.js";
 import { generateRefreshToken } from "../Config/refreshToken.js";
 import { validateMongodbId } from "../Config/validateMongodbId.js";
 
-import userModel from "../Models/userModel.js";
+import userModel from "../Models/UserModel.js";
 
 export const createUserController = async (req, res) => {
   const { email } = req.body;
