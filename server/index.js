@@ -21,7 +21,7 @@ app.use(bodyparser.json({ limit: "30mb", extended: true }));
 app.use(bodyparser.urlencoded({ limit: "30mb", extended: true }));
 
 //cors-setup
-app.use(cors());
+app.use(cors({ origin: "https://project-flow-vwv4.onrender.com/" }));
 
 //For refreshing the token
 // app.use(cookieParser());
