@@ -1,57 +1,61 @@
-import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import NotificationItem from "../Components/NotificationComponents/NotificationItem";
 import Spinner from "../Components/ReusableComponents/Spinner";
+import { getAllNotifications } from "../features/userSlice";
 import { socket } from "../socket";
-import { base_url } from "../utils/base_url";
 
-const NotificationPage = ({ setIsShowBell }) => {
-  const [allNotifications, setAllNotifications] = useState();
-
-  const { isLoading, Token, user } = useSelector((state) => {
+const NotificationPage = () => {
+  const [notificationsArray, setNotificationsArray] = useState();
+  const dispatch = useDispatch();
+  const { isLoading, Token, user, allNotifications } = useSelector((state) => {
     return state.user;
   });
-  const fetchNotifications = async () => {
-    try {
-      const response = await axios.get(
-        `${base_url}/user/all-notifications/${user?._id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${Token !== null ? Token : ""}`,
-            Accept: "application/json",
-          },
-        }
-      );
-      setAllNotifications(response?.data?.allNotifications);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
+  const stableFetchNotifications = useCallback(() => {
+    dispatch(getAllNotifications({ Token, UserId: user?._id }));
+  }, [Token, dispatch, user?._id]);
 
   useEffect(() => {
-    setIsShowBell(false);
-  }, []);
+    stableFetchNotifications();
+  }, [stableFetchNotifications]);
 
-  useEffect(() => {
-    fetchNotifications();
+  const stableEffect = useCallback(() => {
+    // const fetchNotifications = async () => {
+    //   // try {
+    //   //   // const response = await axios.get(
+    //   //   //   `${base_url}/user/all-notifications/${user?._id}`,
+    //   //   //   {
+    //   //   //     headers: {
+    //   //   //       Authorization: `Bearer ${Token !== null ? Token : ""}`,
+    //   //   //       Accept: "application/json",
+    //   //   //     },
+    //   //   //   }
+    //   //   // );
+    //   //   dispatch(getAllNotifications({ Token, UserId: user?._id }));
+    //   //   setNotificationsArray(allNotifications);
+    //   // } catch (error) {
+    //   //   console.log(error);
+    //   // }
+    //   dispatch(getAllNotifications({ Token, UserId: user?._id }));
+    // };
+    // fetchNotifications();
+    setNotificationsArray(allNotifications);
     socket.on("notificationResponse", (data) => {
-      setAllNotifications(data);
-      setIsShowBell(true);
+      setNotificationsArray((prevNotifications) => [
+        ...prevNotifications,
+        data,
+      ]);
     });
-    // socket.on("notificationResponse", (data) =>
-    //   console.log("DATA IN >> ", data)
-    // );
-  }, []);
+  }, [allNotifications]);
 
-  console.log("All NOti", allNotifications);
+  useEffect(() => {
+    stableEffect();
+  }, [stableEffect]);
 
-  const NotificationList = allNotifications?.map((notification) => {
+  const NotificationList = notificationsArray?.map((notification) => {
     return (
-      <NotificationItem
-        key={notification?.message}
-        notification={notification}
-      />
+      <NotificationItem key={notification?._id} notification={notification} />
     );
   });
   return (
@@ -68,8 +72,8 @@ const NotificationPage = ({ setIsShowBell }) => {
                 </tr>
               </thead>
               <tbody>
-                {allNotifications?.map((notification) => (
-                  <tr key={notification?.message}>
+                {notificationsArray?.map((notification) => (
+                  <tr key={notification?._id}>
                     <td>{notification?.message}</td>
                     <td>{new Date(notification?.date).toDateString()}</td>
                   </tr>

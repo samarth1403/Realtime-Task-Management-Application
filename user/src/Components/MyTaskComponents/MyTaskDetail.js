@@ -43,7 +43,8 @@ const MyTaskDetail = () => {
       dispatch(updateTask({ body: values, Token: Token, TaskId }));
       setTimeout(() => {
         dispatch(getAllTasks({ Token }));
-      }, 500);
+        dispatch(getTask({ TaskId, Token }));
+      }, 100);
       formik.resetForm();
     },
   });

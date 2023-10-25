@@ -1,9 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { BiRefresh } from "react-icons/bi";
 import { BsFillEyeFill } from "react-icons/bs";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { getAllTasks } from "../../features/taskSlice";
+import Spinner from "../ReusableComponents/Spinner";
 
 const KanbanboardItem = ({ kanbanItem }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const { Token } = useSelector((state) => {
+    return state?.user;
+  });
+  const dispatch = useDispatch();
+
+  const handleClickReload = () => {
+    setIsLoading(true);
+    dispatch(getAllTasks({ Token }));
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  };
   const taskList = kanbanItem?.tasks?.map((task, index) => {
     return (
       <div
@@ -32,16 +48,25 @@ const KanbanboardItem = ({ kanbanItem }) => {
     );
   });
   return (
-    <div className="shadow-md shadow-blue-500/50 border border-gray-300 rounded-md p-4 my-2 flex flex-col flex-no-wrap justify-center items-center min-[320px]:w-[280px] sm:w-[400px]">
-      <div className="flex flex-row flex-no-wrap justify-between items-center min-[320px]:w-[260px] sm:w-[360px]">
-        <p className="font-roboto text-lg font-medium mb-4">
-          {kanbanItem?.status} - {kanbanItem?.tasks?.length}
-        </p>
-        <button>
-          <BiRefresh size="25px" />
-        </button>
-      </div>
-      <div className="flex flex-col flex-no-wrap">{taskList}</div>
+    <div>
+      {isLoading && (
+        <div className="flex justify-center">
+          <Spinner />
+        </div>
+      )}
+      {!isLoading && (
+        <div className="shadow-md shadow-blue-500/50 border border-gray-300 rounded-md p-4 my-2 flex flex-col flex-no-wrap justify-center items-center min-[320px]:w-[280px] sm:w-[400px]">
+          <div className="flex flex-row flex-no-wrap justify-between items-center min-[320px]:w-[260px] sm:w-[360px]">
+            <p className="font-roboto text-lg font-medium mb-4">
+              {kanbanItem?.status} - {kanbanItem?.tasks?.length}
+            </p>
+            <button onClick={handleClickReload}>
+              <BiRefresh size="25px" />
+            </button>
+          </div>
+          <div className="flex flex-col flex-no-wrap">{taskList}</div>
+        </div>
+      )}
     </div>
   );
 };

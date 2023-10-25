@@ -1,9 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { BiRefresh } from "react-icons/bi";
 import { BsFillEyeFill } from "react-icons/bs";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { getAllTasks } from "../../features/taskSlice";
+import Spinner from "../ReusableComponents/Spinner";
 
 const TasksAssigneeWise = ({ assigneeWiseTasks }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const { Token } = useSelector((state) => {
+    return state?.user;
+  });
+  const dispatch = useDispatch();
+
+  const handleClickReload = () => {
+    setIsLoading(true);
+    dispatch(getAllTasks({ Token }));
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  };
   const assigneeWiseTaskListArray = assigneeWiseTasks?.map((assignee) => {
     return (
       <div
@@ -31,13 +47,20 @@ const TasksAssigneeWise = ({ assigneeWiseTasks }) => {
         <p className="font-roboto text-lg font-medium">
           All Tasks - Assignee Wise
         </p>
-        <button>
+        <button onClick={handleClickReload}>
           <BiRefresh size="25px" />
         </button>
       </div>
-      <div className="flex flex-col flex-no-wrap">
-        {assigneeWiseTaskListArray}
-      </div>
+      {isLoading && (
+        <div className="flex justify-center">
+          <Spinner />
+        </div>
+      )}
+      {!isLoading && (
+        <div className="flex flex-col flex-no-wrap">
+          {assigneeWiseTaskListArray}
+        </div>
+      )}
     </div>
   );
 };

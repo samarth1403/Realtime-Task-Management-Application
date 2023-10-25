@@ -84,8 +84,6 @@ const HomePage = () => {
     assigneeWiseTasks.push(obj);
   });
 
-  console.log(assigneeWiseTasks);
-
   return (
     <div className="flex flex-row flex-wrap justify-evenly items-start p-6">
       <div className="flex flex-col flex-no-wrap justify-center items-center">

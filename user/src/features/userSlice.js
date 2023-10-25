@@ -98,7 +98,6 @@ const userSlice = createSlice({
       state.isError = false;
       state.allUsers = action.payload?.allUsers;
       state.res = action.payload?.res;
-      console.log(action.payload?.allUsers);
     });
     builder.addCase(getAllUsers.rejected, (state, action) => {
       state.isLoading = false;
@@ -116,7 +115,6 @@ const userSlice = createSlice({
       state.isError = false;
       state.allNotifications = action.payload?.allNotifications;
       state.res = action.payload?.res;
-      console.log(action.payload?.allUsers);
     });
     builder.addCase(getAllNotifications.rejected, (state, action) => {
       state.isLoading = false;

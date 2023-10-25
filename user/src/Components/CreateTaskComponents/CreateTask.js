@@ -33,9 +33,9 @@ const CreateTask = () => {
       title: "",
       description: "",
       assignee: "",
-      creator: "",
+      creator: user?._id,
       priority: "",
-      status: "",
+      status: "Open",
       creationDate: "",
       dueDate: "",
     },
@@ -137,7 +137,8 @@ const CreateTask = () => {
                   ) : null}
                 </div>
               </div>
-              <div>
+              {/* For Creator*/}
+              {/* <div>
                 <select
                   className="min-[320px]:w-[250px] sm:w-[250px] h-[60px] font-roboto font-[400] text-xl rounded-[15px] px-4 pr-8 m-4"
                   id="creator"
@@ -155,9 +156,7 @@ const CreateTask = () => {
                     <div>{formik.errors.creator}</div>
                   ) : null}
                 </div>
-              </div>
-            </div>
-            <div className="flex flex-row flex-wrap justify-evenly items-center">
+              </div> */}
               <div>
                 <select
                   className="min-[320px]:w-[250px] sm:w-[250px] h-[60px] font-roboto font-[400] text-xl rounded-[15px] px-4 pr-8 m-4"
@@ -179,7 +178,32 @@ const CreateTask = () => {
                   ) : null}
                 </div>
               </div>
-              <div>
+            </div>
+            <div className="flex flex-row flex-wrap justify-evenly items-center">
+              {/*For Priority */}
+              {/* <div>
+                <select
+                  className="min-[320px]:w-[250px] sm:w-[250px] h-[60px] font-roboto font-[400] text-xl rounded-[15px] px-4 pr-8 m-4"
+                  id="priority"
+                  type="text"
+                  name="priority"
+                  value={formik.values.priority}
+                  onChange={formik.handleChange("priority")}
+                  onBlur={formik.handleBlur("priority")}
+                >
+                  <option value="">Select Priority</option>
+                  <option value={"P1"}>P1</option>
+                  <option value={"P2"}>P2</option>
+                  <option value={"P3"}>P3</option>
+                </select>
+                <div className="text-black font-bold text-lg text-center">
+                  {formik.touched.priority && formik.errors.priority ? (
+                    <div>{formik.errors.priority}</div>
+                  ) : null}
+                </div>
+              </div> */}
+              {/*For Status */}
+              {/* <div>
                 <select
                   className="min-[320px]:w-[250px] sm:w-[250px] h-[60px] font-roboto font-[400] text-xl rounded-[15px] px-4 pr-8 m-4"
                   id="status"
@@ -199,7 +223,7 @@ const CreateTask = () => {
                     <div>{formik.errors.status}</div>
                   ) : null}
                 </div>
-              </div>
+              </div> */}
             </div>
             <div className="flex flex-row flex-wrap justify-evenly items-center">
               <div>

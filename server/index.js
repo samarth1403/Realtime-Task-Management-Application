@@ -43,20 +43,15 @@ socketIO.on("connection", (socket) => {
   console.log(`⚡: ${socket.id} user just connected!`);
 
   socket.on("notification", async (data) => {
-    console.log("Data", data);
-    const newNotification = await NotificationModel.create(data);
-    const notifications = await NotificationModel.find({
-      user: data?.user,
-    }).populate("user");
-    socketIO.emit("notificationResponse", notifications);
+    await NotificationModel.create(data);
+    // const notifications = await NotificationModel.find({
+    //   user: data?.user,
+    // }).populate("user");
+    socketIO.emit("notificationResponse", data);
   });
   socket.on("disconnect", () => {
     console.log("🔥: A user disconnected");
   });
-});
-
-app.get("/", (req, res) => {
-  res.send("Hello World");
 });
 
 const PORT = process.env.PORT;

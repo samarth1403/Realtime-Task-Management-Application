@@ -1,15 +1,30 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { AiFillHome } from "react-icons/ai";
 import { BiLogOutCircle } from "react-icons/bi";
 import { BsFillBellFill, BsFillPersonFill } from "react-icons/bs";
+import { SiPolymerproject } from "react-icons/si";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { socket } from "../socket";
 
-const Header = ({ isShowBell }) => {
+const Header = () => {
   const { user } = useSelector((state) => {
     return state.user;
   });
+  const [notificationAlert, setNotificationAlert] = useState(false);
+
+  const stableEffect = useCallback(() => {
+    socket.on("notificationResponse", (data) => {
+      if (user?._id === data?.user) {
+        setNotificationAlert(true);
+      }
+    });
+  }, [user?._id]);
+
+  useEffect(() => {
+    stableEffect();
+  }, [stableEffect]);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -19,9 +34,12 @@ const Header = ({ isShowBell }) => {
 
   return (
     <nav>
-      <div className="flex flex-row flex-wrap justify-evenly items-center py-1 shadow-md">
+      <div className="flex flex-row flex-wrap justify-evenly items-center pt-2 pb-1 shadow-md">
         <Link to="/" className="mb-2 min-[320px]:hidden sm:inline-block">
-          <p className="font-roboto font-bold text-2xl">Task Manager</p>
+          <div className="flex flex-row flex-no-wrap justify-center items-center text-blue-500">
+            <SiPolymerproject size={"25px"} className="mx-2" />
+            <p className="font-roboto font-bold text-2xl mx-1 ">Project-Flow</p>
+          </div>
         </Link>
         <div className=" flex flex-row flex-wrap justify-evenly items-center sm:min-w-[400px] md:min-w-[600px] mb-2">
           <Link to="/my-tasks">
@@ -41,18 +59,24 @@ const Header = ({ isShowBell }) => {
           >
             <AiFillHome size={"30px"} />
           </Link>
-          <Link to="/notifications" className="my-2 mx-4">
-            {isShowBell && (
+          <Link to="/notifications" className="my-2 mx-4 relative">
+            {notificationAlert && (
               <div
                 style={{
-                  width: 10,
-                  height: 10,
-                  borderRadius: 5,
+                  width: "14px",
+                  height: "14px",
+                  borderRadius: "10px",
                   backgroundColor: "red",
+                  position: "absolute",
+                  left: "16px",
+                  bottom: "16px",
                 }}
               ></div>
             )}
-            <BsFillBellFill size={"25px"} />
+            <BsFillBellFill
+              onClick={() => setNotificationAlert(false)}
+              size={"25px"}
+            />
           </Link>
           <Link
             to={user === null ? "/signin" : "/my-profile"}
