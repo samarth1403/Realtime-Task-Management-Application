@@ -1,40 +1,44 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+// import axios from "axios";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import NotificationItem from "../Components/NotificationComponents/NotificationItem";
 import Spinner from "../Components/ReusableComponents/Spinner";
 import { socket } from "../socket";
-import { base_url } from "../utils/base_url";
+// import { base_url } from "../utils/base_url";
 
 const NotificationPage = () => {
   const [allNotifications, setAllNotifications] = useState([]);
-  const { user, Token, isLoading } = useSelector((state) => {
+  const { isLoading } = useSelector((state) => {
     return state.user;
   });
-  const fetchNotifications = async () => {
-    try {
-      const response = await axios.get(
-        `${base_url}/user/all-notifications/${user?._id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${Token !== null ? Token : ""}`,
-            Accept: "application/json",
-          },
-        }
-      );
-      setAllNotifications(response?.data?.allNotifications);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const fetchNotifications = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${base_url}/user/all-notifications/${user?._id}`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${Token !== null ? Token : ""}`,
+  //           Accept: "application/json",
+  //         },
+  //       }
+  //     );
+  //     setAllNotifications(response?.data?.allNotifications);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
-  useEffect(() => {}, [allNotifications]);
-  useEffect(() => {
+  // useEffect(() => {}, [allNotifications]);
+
+  const stableEffect = useCallback(() => {
     //const apidata = fetchNotifications();
     socket.on("notificationResponse", (data) =>
       setAllNotifications([...allNotifications, data])
     );
-  }, []);
+  }, [allNotifications]);
+  useEffect(() => {
+    stableEffect();
+  }, [stableEffect]);
   console.log("All NOti", allNotifications);
 
   // const notificationListArray = allNotifications?.map((notification) => {

@@ -139,7 +139,7 @@ const taskSlice = createSlice({
       state.isError = false;
       state.updatedTask = action.payload?.updatedTask;
       state.res = action.payload?.res;
-      if (state.isSuccess && state?.res?.success) {
+      if (state.isSuccess) {
         toast.success("Task Updated Successfully");
       }
     });

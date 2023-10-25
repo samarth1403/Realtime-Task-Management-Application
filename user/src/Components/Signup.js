@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
@@ -21,11 +21,15 @@ const Signup = () => {
     password: Yup.string().required("Password is Required"),
   });
 
-  useEffect(() => {
+  const stableEffect = useCallback(() => {
     if (registeredUser !== undefined && res?.success) {
       navigate("/signin");
     }
-  }, [registeredUser, res]);
+  }, [navigate, registeredUser, res?.success]);
+
+  useEffect(() => {
+    stableEffect();
+  }, [stableEffect]);
 
   const formik = useFormik({
     enableReinitialize: true,

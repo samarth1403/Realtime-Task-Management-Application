@@ -1,9 +1,9 @@
 import { useFormik } from "formik";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import { getTask, updateTask } from "../../features/taskSlice";
+import { getAllTasks, getTask, updateTask } from "../../features/taskSlice";
 import Input from "../ReusableComponents/Input";
 import Spinner from "../ReusableComponents/Spinner";
 
@@ -13,11 +13,16 @@ const UpdateTask = () => {
     return state.user;
   });
   const location = useLocation();
+  const navigate = useNavigate();
   const TaskId = location.pathname.split("/")[2];
 
-  useEffect(() => {
+  const stableDispatch = useCallback(() => {
     dispatch(getTask({ Token, TaskId }));
-  }, [TaskId]);
+  }, [TaskId, Token, dispatch]);
+
+  useEffect(() => {
+    stableDispatch();
+  }, [stableDispatch]);
 
   const { gotTask } = useSelector((state) => {
     return state.task;
@@ -50,8 +55,8 @@ const UpdateTask = () => {
     initialValues: {
       title: gotTask?.title || "",
       description: gotTask?.description || "",
-      assignee: gotTask?.assignee?.name || "",
-      creator: gotTask?.assignee?.creator || "",
+      assignee: gotTask?.assignee?._id || "",
+      creator: gotTask?.creator?._id || "",
       priority: gotTask?.priority || "",
       status: gotTask?.status || "",
       creationDate: changeDateFormat(gotTask?.creationDate) || "",
@@ -60,6 +65,10 @@ const UpdateTask = () => {
     validationSchema: schema,
     onSubmit: (values) => {
       dispatch(updateTask({ body: values, Token: Token, TaskId }));
+      setTimeout(() => {
+        dispatch(getAllTasks({ Token }));
+        navigate(-1);
+      }, 100);
       formik.resetForm();
     },
   });
@@ -130,7 +139,7 @@ const UpdateTask = () => {
                   onChange={formik.handleChange("assignee")}
                   onBlur={formik.handleBlur("assignee")}
                 >
-                  <option defaultValue={gotTask?.assignee?.name}>
+                  <option defaultValue={gotTask?.assignee?._id}>
                     {gotTask?.assignee?.name}
                   </option>
                   {allUsers?.map((user) => {
@@ -157,7 +166,7 @@ const UpdateTask = () => {
                   onChange={formik.handleChange("creator")}
                   onBlur={formik.handleBlur("creator")}
                 >
-                  <option defaultValue={gotTask?.creator?.name}>
+                  <option defaultValue={gotTask?.creator?._id}>
                     {gotTask?.creator?.name}
                   </option>
                   <option value={user?._id}>{user?.name}</option>

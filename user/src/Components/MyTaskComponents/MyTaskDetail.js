@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { AiFillDelete } from "react-icons/ai";
 import { BiEdit } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
@@ -48,12 +48,12 @@ const MyTaskDetail = () => {
     },
   });
 
-  const fetchTask = () => {
+  const stableDispatch = useCallback(() => {
     dispatch(getTask({ TaskId, Token }));
-  };
+  }, [TaskId, Token, dispatch]);
   useEffect(() => {
-    fetchTask();
-  }, [TaskId]);
+    stableDispatch();
+  }, [stableDispatch]);
 
   const handleClickDelete = (TaskId) => {
     // eslint-disable-next-line no-restricted-globals

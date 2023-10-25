@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
@@ -29,10 +29,14 @@ const App = () => {
     return state.user;
   });
 
-  useEffect(() => {
+  const stableDispatch = useCallback(() => {
     dispatch(getAllTasks({ Token: Token }));
     dispatch(getAllUsers({ Token }));
-  }, [Token]);
+  }, [Token, dispatch]);
+
+  useEffect(() => {
+    stableDispatch();
+  }, [stableDispatch]);
 
   return (
     <Router>
