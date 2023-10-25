@@ -20,6 +20,10 @@ dotenv.config();
 app.use(bodyparser.json({ limit: "30mb", extended: true }));
 app.use(bodyparser.urlencoded({ limit: "30mb", extended: true }));
 
+//cors-setup
+const allowedOrigins = ["https://project-flow-vwv4.onrender.com"];
+
+// Set up CORS with allowed origins
 app.use(cors());
 
 //For refreshing the token
