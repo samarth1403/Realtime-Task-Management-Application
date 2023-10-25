@@ -32,7 +32,7 @@ app.use(morgan("dev"));
 const server = http.createServer(app);
 const socketIO = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "https://project-flow-vwv4.onrender.com/",
   },
 });
 
