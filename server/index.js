@@ -24,7 +24,22 @@ app.use(bodyparser.urlencoded({ limit: "30mb", extended: true }));
 const allowedOrigins = ["https://project-flow-vwv4.onrender.com"];
 
 // Set up CORS with allowed origins
-app.use(cors());
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//   })
+// );
+
+const corsOptions = {
+  origin: "*",
+};
+app.use(cors(corsOptions));
 
 //For refreshing the token
 // app.use(cookieParser());
@@ -35,7 +50,7 @@ app.use(morgan("dev"));
 const server = http.createServer(app);
 const socketIO = new Server(server, {
   cors: {
-    origin: "https://project-flow-vwv4.onrender.com/",
+    origin: "https://project-flow-vwv4.onrender.com",
   },
 });
 
