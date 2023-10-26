@@ -22,7 +22,7 @@ const getAllUsers = async (data) => {
 };
 
 const getUser = async (data) => {
-  const response = await axios.get(`${base_url}/user/get`, {
+  const response = await axios.get(`${base_url}/user/get/${data?.UserId}`, {
     headers: {
       Authorization: `Bearer ${data?.Token !== null ? data?.Token : ""}`,
       Accept: "application/json",
@@ -60,6 +60,19 @@ const updateUserProfile = async (data) => {
   }
 };
 
+const deleteNotification = async (data) => {
+  const response = await axios.delete(
+    `${base_url}/user/delete-notification/${data?.UserId}/${data?.NotificationId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${data?.Token !== null ? data?.Token : ""}`,
+        Accept: "application/json",
+      },
+    }
+  );
+  return response.data;
+};
+
 const getAllNotifications = async (data) => {
   const response = await axios.get(
     `${base_url}/user/all-notifications/${data?.UserId}`,
@@ -80,6 +93,7 @@ const userService = {
   updateUserProfile,
   getAllUsers,
   getAllNotifications,
+  deleteNotification,
 };
 
 export default userService;

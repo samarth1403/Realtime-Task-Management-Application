@@ -1,10 +1,13 @@
+import axios from "axios";
 import { useFormik } from "formik";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import { createATask, getAllTasks } from "../../features/taskSlice";
+import { createATask } from "../../features/taskSlice";
+import { getUser } from "../../features/userSlice";
 import { socket } from "../../socket";
+import { base_url } from "../../utils/base_url";
 import Input from "../ReusableComponents/Input";
 import Spinner from "../ReusableComponents/Spinner";
 
@@ -18,9 +21,31 @@ const CreateTask = () => {
     }
   );
 
-  socket.on("taskCreatedResponse", (newTask) => {
-    console.log("Hello", newTask);
+  const usersArray = [];
+  allUsers?.forEach((user) => {
+    const obj = {
+      user: user?._id,
+    };
+    usersArray.push(obj);
   });
+
+  const notifyCreatedTask = async (values) => {
+    const response = await axios.get(
+      `${base_url}/user/get/${values?.assignee}`,
+      {
+        headers: {
+          Authorization: `Bearer ${Token !== null ? Token : ""}`,
+          Accept: "application/json",
+        },
+      }
+    );
+    const { gotUser } = response?.data;
+    socket.emit("taskCreated", {
+      users: usersArray,
+      message: `${values?.title} Task is assigned to ${gotUser?.name} by ${user?.name}`,
+      date: Date.now(),
+    });
+  };
 
   let schema = Yup.object().shape({
     title: Yup.string().required("Title is Required"),
@@ -48,11 +73,7 @@ const CreateTask = () => {
     validationSchema: schema,
     onSubmit: (values) => {
       dispatch(createATask({ body: values, Token: Token }));
-      socket.emit("taskCreated", {
-        user: values?.assignee,
-        message: `${values?.title} Task is assigned to you by ${user?.name}`,
-        date: Date.now(),
-      });
+      notifyCreatedTask(values);
       setTimeout(() => {
         if (isSuccess) {
           navigate(-1);

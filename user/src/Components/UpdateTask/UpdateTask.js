@@ -25,6 +25,14 @@ const UpdateTask = () => {
     stableDispatch();
   }, [stableDispatch]);
 
+  const usersArray = [];
+  allUsers?.forEach((user) => {
+    const obj = {
+      user: user?._id,
+    };
+    usersArray.push(obj);
+  });
+
   const { gotTask, isSuccess } = useSelector((state) => {
     return state.task;
   });
@@ -67,7 +75,7 @@ const UpdateTask = () => {
     onSubmit: (values) => {
       dispatch(updateTask({ body: values, Token, TaskId }));
       socket.emit("taskUpdated", {
-        user: values?.creator,
+        users: usersArray,
         message: `${values?.title} Task is Updated by ${user?.name}`,
         date: Date.now(),
       });

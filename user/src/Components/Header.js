@@ -16,26 +16,18 @@ const Header = () => {
 
   const stableEffect = useCallback(() => {
     socket.on("taskCreatedResponse", (data) => {
-      if (user?._id === data?.user) {
-        setNotificationAlert(true);
-      }
+      setNotificationAlert(true);
     });
     socket.on("taskDeletedResponse", (data) => {
-      if (user?._id === data?.user) {
-        setNotificationAlert(true);
-      }
+      setNotificationAlert(true);
     });
     socket.on("taskUpdatedResponse", (data) => {
-      if (user?._id === data?.user) {
-        setNotificationAlert(true);
-      }
+      setNotificationAlert(true);
     });
     socket.on("statusUpdatedResponse", (data) => {
-      if (user?._id === data?.user) {
-        setNotificationAlert(true);
-      }
+      setNotificationAlert(true);
     });
-  }, [user?._id]);
+  }, []);
 
   useEffect(() => {
     stableEffect();

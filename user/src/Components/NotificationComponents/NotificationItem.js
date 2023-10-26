@@ -14,7 +14,8 @@ const NotificationItem = ({ notification }) => {
           <p className="font-roboto text-sm font-normal py-2">
             Date -{" "}
             <span className="font-roboto text-sm font-medium py-2">
-              {new Date(notification.date).toDateString()}
+              {new Date(notification?.date).toDateString()} at{" "}
+              {new Date(notification?.date).toLocaleTimeString()}
             </span>
           </p>
         </div>

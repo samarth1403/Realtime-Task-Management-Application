@@ -15,11 +15,19 @@ const MyTaskDetail = () => {
   const location = useLocation();
   const TaskId = location.pathname.split("/")[2];
 
-  const { Token, user } = useSelector((state) => {
+  const { Token, user, allUsers } = useSelector((state) => {
     return state.user;
   });
   const { gotTask, isLoading, isSuccess } = useSelector((state) => {
     return state.task;
+  });
+
+  const usersArray = [];
+  allUsers?.forEach((user) => {
+    const obj = {
+      user: user?._id,
+    };
+    usersArray.push(obj);
   });
 
   let schema = Yup.object().shape({
@@ -36,13 +44,13 @@ const MyTaskDetail = () => {
       dispatch(updateTask({ body: values, Token: Token, TaskId }));
       if (values?.status === "In Progress") {
         socket.emit("statusUpdated", {
-          user: gotTask?.creator?._id,
+          users: usersArray,
           message: `${user?.name} started implementing ${gotTask?.title} Task`,
           date: Date.now(),
         });
       } else if (values?.status === "Completed") {
         socket.emit("statusUpdated", {
-          user: gotTask?.creator?._id,
+          users: usersArray,
           message: `${user?.name} has Completed ${gotTask?.title} Task`,
           date: Date.now(),
         });
@@ -67,7 +75,7 @@ const MyTaskDetail = () => {
     if (confirm("Are you Sure to Delete") === true) {
       dispatch(deleteTask({ Token, TaskId }));
       socket.emit("taskDeleted", {
-        user: gotTask?.creator?._id,
+        users: usersArray,
         message: `${gotTask?.title} is Deleted by ${user?.name}`,
         date: Date.now(),
       });

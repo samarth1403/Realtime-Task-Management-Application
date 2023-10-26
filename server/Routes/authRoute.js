@@ -12,6 +12,7 @@ import {
 } from "../Controllers/authControllers.js";
 import {
   createNotificationController,
+  deleteNotificationController,
   getNotificationsController,
 } from "../Controllers/notificationControllers.js";
 import {
@@ -26,12 +27,7 @@ authRouter.post("/login-user", loginUserController);
 authRouter.post("/admin-login", loginAdminController);
 // authRouter.get("/logout", logoutUserController);
 authRouter.get("/get/all-users", authMiddleware, getAllUsersController);
-authRouter.get(
-  "/get/:id",
-  authMiddleware,
-  isAdminMiddleware,
-  getAUserController
-);
+authRouter.get("/get/:UserId", authMiddleware, getAUserController);
 authRouter.delete("/delete/:id", deleteAUserController);
 authRouter.put("/update-user-profile", authMiddleware, updateAUserController);
 
@@ -49,6 +45,7 @@ authRouter.put(
   unblockAUserController
 );
 
+//For Notifications
 authRouter.get(
   "/all-notifications/:UserId",
   authMiddleware,
@@ -58,6 +55,11 @@ authRouter.post(
   "/create-notification",
   authMiddleware,
   createNotificationController
+);
+authRouter.delete(
+  "/delete-notification/:UserId/:NotificationId",
+  authMiddleware,
+  deleteNotificationController
 );
 
 export default authRouter;

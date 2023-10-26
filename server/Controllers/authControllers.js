@@ -155,12 +155,19 @@ export const getAllUsersController = async (req, res) => {
 
 //Fetch A Single User
 export const getAUserController = async (req, res) => {
-  const { _id } = req.user;
-  validateMongodbId(_id);
+  const { UserId } = req.params;
+  validateMongodbId(UserId);
   try {
-    const user = await userModel.findById({ _id: _id });
+    const user = await userModel.findById({ _id: UserId });
+
+    const userObject = {
+      name: user?.name,
+      email: user?.email,
+      role: user?.role,
+      _id: user?._id,
+    };
     res.json({
-      gotUser: user,
+      gotUser: userObject,
       res: { message: "User got Successfully", success: true },
     });
   } catch (error) {

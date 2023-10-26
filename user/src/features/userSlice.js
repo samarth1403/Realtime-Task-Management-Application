@@ -71,6 +71,17 @@ export const getAllNotifications = createAsyncThunk(
   }
 );
 
+export const deleteNotification = createAsyncThunk(
+  "user/delete-notification",
+  async (data, thunkAPI) => {
+    try {
+      return await userService.deleteNotification(data);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 export const logoutUser = createAction("logout/user");
 
 export const getAllUsers = createAsyncThunk(
@@ -117,6 +128,23 @@ const userSlice = createSlice({
       state.res = action.payload?.res;
     });
     builder.addCase(getAllNotifications.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+      state.message = action.error;
+    });
+
+    builder.addCase(deleteNotification.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(deleteNotification.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.isError = false;
+      state.deletedNotification = action.payload?.deletedNotification;
+      state.res = action.payload?.res;
+    });
+    builder.addCase(deleteNotification.rejected, (state, action) => {
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;

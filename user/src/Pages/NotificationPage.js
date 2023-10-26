@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import NotificationItem from "../Components/NotificationComponents/NotificationItem";
 import Spinner from "../Components/ReusableComponents/Spinner";
-import { getAllNotifications } from "../features/userSlice";
+import { deleteNotification, getAllNotifications } from "../features/userSlice";
+import { AiFillDelete } from "react-icons/ai";
 import { socket } from "../socket";
 
 const NotificationPage = () => {
@@ -13,7 +14,6 @@ const NotificationPage = () => {
   });
 
   const stableFetchNotifications = useCallback(() => {
-    console.log("GetALLNotifications in Notification Page");
     dispatch(getAllNotifications({ Token, UserId: user?._id }));
   }, [Token, dispatch, user?._id]);
 
@@ -26,7 +26,6 @@ const NotificationPage = () => {
   }, [stableFetchNotifications]);
 
   const stableSaveNotifications = useCallback(() => {
-    console.log("SetNotifications");
     setNotificationsArray(allNotifications);
   }, [allNotifications]);
 
@@ -49,6 +48,26 @@ const NotificationPage = () => {
     };
   }, []);
 
+  const handleClickDelete = (NotificationId) => {
+    // eslint-disable-next-line no-restricted-globals
+    if (confirm("Are you Sure to Delete") === true) {
+      dispatch(
+        deleteNotification({ Token, NotificationId, UserId: user?._id })
+      );
+      setTimeout(() => {
+        stableFetchNotifications();
+      }, 100);
+    }
+  };
+
+  if (notificationsArray?.length === 0) {
+    return (
+      <div className="flex justify-center my-8">
+        <p className="text-2xl font-medium">You don't have Notifications</p>
+      </div>
+    );
+  }
+
   const NotificationList = notificationsArray?.map((notification) => {
     return (
       <NotificationItem key={notification?._id} notification={notification} />
@@ -65,6 +84,7 @@ const NotificationPage = () => {
                 <tr>
                   <th>Message</th>
                   <th>Date</th>
+                  <th>Delete</th>
                 </tr>
               </thead>
               <tbody>
@@ -74,6 +94,13 @@ const NotificationPage = () => {
                     <td>
                       {new Date(notification?.date).toDateString()} at{" "}
                       {new Date(notification?.date).toLocaleTimeString()}
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => handleClickDelete(notification?._id)}
+                      >
+                        <AiFillDelete size={"25px"} className="text-red-500" />
+                      </button>
                     </td>
                   </tr>
                 ))}
