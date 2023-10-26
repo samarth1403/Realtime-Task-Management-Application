@@ -6,6 +6,14 @@ import MyTaskItem from "./MyTaskItem";
 const MyTaskList = ({ taskListArray }) => {
   const navigate = useNavigate();
 
+  if (taskListArray?.length === 0) {
+    return (
+      <div className="flex justify-center my-8">
+        <p className="text-2xl font-medium">You don't have any tasks</p>
+      </div>
+    );
+  }
+
   const TaskList = taskListArray?.map((task) => {
     return <MyTaskItem key={task._id} task={task} />;
   });

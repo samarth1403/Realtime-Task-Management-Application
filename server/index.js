@@ -32,7 +32,7 @@ app.use(cors(corsOptions));
 app.use(morgan("dev"));
 
 const server = http.createServer(app);
-const socketIO = new Server(server, {
+export const socketIO = new Server(server, {
   cors: {
     origin: "https://project-flow-vwv4.onrender.com",
   },
@@ -42,13 +42,23 @@ const socketIO = new Server(server, {
 socketIO.on("connection", (socket) => {
   console.log(`⚡: ${socket.id} user just connected!`);
 
-  socket.on("notification", async (data) => {
-    await NotificationModel.create(data);
-    // const notifications = await NotificationModel.find({
-    //   user: data?.user,
-    // }).populate("user");
-    socketIO.emit("notificationResponse", data);
+  socket.on("taskCreated", async (data) => {
+    const notification = await NotificationModel.create(data);
+    socketIO.emit("taskCreatedResponse", notification);
   });
+  socket.on("taskUpdated", async (data) => {
+    const notification = await NotificationModel.create(data);
+    socketIO.emit("taskUpdatedResponse", notification);
+  });
+  socket.on("taskDeleted", async (data) => {
+    const notification = await NotificationModel.create(data);
+    socketIO.emit("taskDeletedResponse", notification);
+  });
+  socket.on("statusUpdated", async (data) => {
+    const notification = await NotificationModel.create(data);
+    socketIO.emit("statusUpdatedResponse", notification);
+  });
+
   socket.on("disconnect", () => {
     console.log("🔥: A user disconnected");
   });

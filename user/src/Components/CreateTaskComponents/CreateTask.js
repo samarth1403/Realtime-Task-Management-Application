@@ -12,8 +12,14 @@ const CreateTask = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { isLoading, Token, allUsers, user } = useSelector((state) => {
-    return state.user;
+  const { isLoading, Token, allUsers, user, isSuccess } = useSelector(
+    (state) => {
+      return state.user;
+    }
+  );
+
+  socket.on("taskCreatedResponse", (newTask) => {
+    console.log("Hello", newTask);
   });
 
   let schema = Yup.object().shape({
@@ -42,16 +48,17 @@ const CreateTask = () => {
     validationSchema: schema,
     onSubmit: (values) => {
       dispatch(createATask({ body: values, Token: Token }));
-      socket.emit("notification", {
+      socket.emit("taskCreated", {
         user: values?.assignee,
-        message: `${values?.title} is Assigned to You by ${user?.name}`,
-        date: new Date(values?.creationDate).toDateString(),
+        message: `${values?.title} Task is assigned to you by ${user?.name}`,
+        date: Date.now(),
       });
       setTimeout(() => {
-        navigate("/");
-        dispatch(getAllTasks({ Token }));
-      }, 500);
-      formik.resetForm();
+        if (isSuccess) {
+          navigate(-1);
+        }
+      }, 100);
+      formik.handleReset();
     },
   });
   return (
@@ -125,8 +132,8 @@ const CreateTask = () => {
                   </option>
                   {allUsers?.map((user) => {
                     return (
-                      <option key={user._id} value={user._id}>
-                        {user.name}
+                      <option key={user?._id} value={user?._id}>
+                        {user?.name}
                       </option>
                     );
                   })}

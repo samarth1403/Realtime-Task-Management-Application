@@ -6,52 +6,48 @@ import { getAllNotifications } from "../features/userSlice";
 import { socket } from "../socket";
 
 const NotificationPage = () => {
-  const [notificationsArray, setNotificationsArray] = useState();
+  const [notificationsArray, setNotificationsArray] = useState([]);
   const dispatch = useDispatch();
   const { isLoading, Token, user, allNotifications } = useSelector((state) => {
     return state.user;
   });
 
   const stableFetchNotifications = useCallback(() => {
+    console.log("GetALLNotifications in Notification Page");
     dispatch(getAllNotifications({ Token, UserId: user?._id }));
   }, [Token, dispatch, user?._id]);
+
+  const handleSocketEvent = (data) => {
+    setNotificationsArray((prevNotifications) => [...prevNotifications, data]);
+  };
 
   useEffect(() => {
     stableFetchNotifications();
   }, [stableFetchNotifications]);
 
-  const stableEffect = useCallback(() => {
-    // const fetchNotifications = async () => {
-    //   // try {
-    //   //   // const response = await axios.get(
-    //   //   //   `${base_url}/user/all-notifications/${user?._id}`,
-    //   //   //   {
-    //   //   //     headers: {
-    //   //   //       Authorization: `Bearer ${Token !== null ? Token : ""}`,
-    //   //   //       Accept: "application/json",
-    //   //   //     },
-    //   //   //   }
-    //   //   // );
-    //   //   dispatch(getAllNotifications({ Token, UserId: user?._id }));
-    //   //   setNotificationsArray(allNotifications);
-    //   // } catch (error) {
-    //   //   console.log(error);
-    //   // }
-    //   dispatch(getAllNotifications({ Token, UserId: user?._id }));
-    // };
-    // fetchNotifications();
+  const stableSaveNotifications = useCallback(() => {
+    console.log("SetNotifications");
     setNotificationsArray(allNotifications);
-    socket.on("notificationResponse", (data) => {
-      setNotificationsArray((prevNotifications) => [
-        ...prevNotifications,
-        data,
-      ]);
-    });
   }, [allNotifications]);
 
   useEffect(() => {
-    stableEffect();
-  }, [stableEffect]);
+    stableSaveNotifications();
+  }, [stableSaveNotifications]);
+
+  useEffect(() => {
+    socket.on("taskCreatedResponse", handleSocketEvent);
+    socket.on("taskDeletedResponse", handleSocketEvent);
+    socket.on("taskUpdatedResponse", handleSocketEvent);
+    socket.on("statusUpdatedResponse", handleSocketEvent);
+
+    return () => {
+      // Clean up the event listeners when the component unmounts
+      socket.off("taskCreatedResponse", handleSocketEvent);
+      socket.off("taskDeletedResponse", handleSocketEvent);
+      socket.off("taskUpdatedResponse", handleSocketEvent);
+      socket.off("statusUpdatedResponse", handleSocketEvent);
+    };
+  }, []);
 
   const NotificationList = notificationsArray?.map((notification) => {
     return (
@@ -75,7 +71,10 @@ const NotificationPage = () => {
                 {notificationsArray?.map((notification) => (
                   <tr key={notification?._id}>
                     <td>{notification?.message}</td>
-                    <td>{new Date(notification?.date).toDateString()}</td>
+                    <td>
+                      {new Date(notification?.date).toDateString()} at{" "}
+                      {new Date(notification?.date).toLocaleTimeString()}
+                    </td>
                   </tr>
                 ))}
               </tbody>

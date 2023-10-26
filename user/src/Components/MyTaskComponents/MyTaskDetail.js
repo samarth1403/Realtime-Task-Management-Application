@@ -5,17 +5,13 @@ import { BiEdit } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import {
-  deleteTask,
-  getAllTasks,
-  getTask,
-  updateTask,
-} from "../../features/taskSlice";
+import { deleteTask, getTask, updateTask } from "../../features/taskSlice";
+import { socket } from "../../socket";
 import Spinner from "../ReusableComponents/Spinner";
 
 const MyTaskDetail = () => {
   const dispatch = useDispatch();
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
   const location = useLocation();
   const TaskId = location.pathname.split("/")[2];
 
@@ -27,25 +23,35 @@ const MyTaskDetail = () => {
   });
 
   let schema = Yup.object().shape({
-    priority: Yup.string().required("Priority is Required"),
     status: Yup.string().required("Status is Required"),
   });
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      priority: gotTask?.priority || "",
       status: gotTask?.status || "",
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      console.log(values);
       dispatch(updateTask({ body: values, Token: Token, TaskId }));
+      if (values?.status === "In Progress") {
+        socket.emit("statusUpdated", {
+          user: gotTask?.creator?._id,
+          message: `${user?.name} started implementing ${gotTask?.title} Task`,
+          date: Date.now(),
+        });
+      } else if (values?.status === "Completed") {
+        socket.emit("statusUpdated", {
+          user: gotTask?.creator?._id,
+          message: `${user?.name} has Completed ${gotTask?.title} Task`,
+          date: Date.now(),
+        });
+      }
       setTimeout(() => {
-        dispatch(getAllTasks({ Token }));
-        dispatch(getTask({ TaskId, Token }));
+        if (isSuccess) {
+          navigate(-1);
+        }
       }, 100);
-      formik.resetForm();
     },
   });
 
@@ -60,10 +66,14 @@ const MyTaskDetail = () => {
     // eslint-disable-next-line no-restricted-globals
     if (confirm("Are you Sure to Delete") === true) {
       dispatch(deleteTask({ Token, TaskId }));
+      socket.emit("taskDeleted", {
+        user: gotTask?.creator?._id,
+        message: `${gotTask?.title} is Deleted by ${user?.name}`,
+        date: Date.now(),
+      });
       setTimeout(() => {
         if (isSuccess) {
-          naviagte(-1);
-          dispatch(getAllTasks({ Token }));
+          navigate(-1);
         }
       }, 100);
     }
@@ -82,7 +92,9 @@ const MyTaskDetail = () => {
             <p className="font-roboto text-xl font-medium py-2 w-[50%]">
               {gotTask?.title}
             </p>
-            {gotTask?.assignee?._id === user?._id || user?.role === "admin" ? (
+            {gotTask?.assignee?._id === user?._id ||
+            user?.role === "admin" ||
+            gotTask?.creator?._id === user?._id ? (
               <div className="flex flex-row flex-no-wrap justify-betweeen items-center py-2">
                 <Link to={`/update-task/${gotTask?._id}`} className="mx-6">
                   <BiEdit size={"25px"} />
@@ -166,8 +178,8 @@ const MyTaskDetail = () => {
                     )}
                   </select>
                 </div>
-
-                <div className="font-roboto text-lg font-normal py-2 flex flex-row flex-wrap justify-start items-center">
+                {/*For Priority */}
+                {/* <div className="font-roboto text-lg font-normal py-2 flex flex-row flex-wrap justify-start items-center">
                   <p className="font-roboto text-lg font-normal py-2">
                     Change Priority :{" "}
                   </p>
@@ -191,7 +203,7 @@ const MyTaskDetail = () => {
                       <option value={"P3"}>P3</option>
                     )}
                   </select>
-                </div>
+                </div> */}
               </div>
             ) : (
               <></>

@@ -37,7 +37,7 @@ const TasksStausWise = ({ statusWiseTasks }) => {
       )}
       {!isLoading && (
         <div className="flex flex-col flex-no-wrap">
-          <div className="flex flex-row flex-no-wrap justify-between items-center min-[320px]:w-[260px] sm:w-[360px] shadow-md p-2 rounded-md bg-orange-50 mb-2 ">
+          <div className="flex flex-row flex-no-wrap justify-between items-center min-[320px]:w-[260px] sm:w-[360px] shadow-md p-2 rounded-md bg-orange-100 mb-2 ">
             <div className="flex flex-col flex-no-wrap justify-center items-start my-4 px-2">
               <p className="font-roboto text-lg font-normal">Status - Open</p>
               <p className="font-roboto text-md font-medium">
@@ -48,7 +48,7 @@ const TasksStausWise = ({ statusWiseTasks }) => {
               <BsFillEyeFill size="20px" className="text-blue-500" />
             </Link>
           </div>
-          <div className="flex flex-row flex-no-wrap justify-between items-center min-[320px]:w-[260px] sm:w-[360px] shadow-md p-2 rounded-md bg-blue-50 mb-2">
+          <div className="flex flex-row flex-no-wrap justify-between items-center min-[320px]:w-[260px] sm:w-[360px] shadow-md p-2 rounded-md bg-blue-100 mb-2">
             <div className="flex flex-col flex-no-wrap justify-center items-start my-4 px-2">
               <p className="font-roboto text-lg font-normal">
                 Status - In Progress
@@ -61,7 +61,7 @@ const TasksStausWise = ({ statusWiseTasks }) => {
               <BsFillEyeFill size="20px" className="text-blue-500" />
             </Link>
           </div>
-          <div className="flex flex-row flex-no-wrap justify-between items-center min-[320px]:w-[260px] sm:w-[360px] shadow-md p-2 rounded-md bg-green-50 mb-2">
+          <div className="flex flex-row flex-no-wrap justify-between items-center min-[320px]:w-[260px] sm:w-[360px] shadow-md p-2 rounded-md bg-green-100 mb-2">
             <div className="flex flex-col flex-no-wrap justify-center items-start my-4 px-2">
               <p className="font-roboto text-lg font-normal">
                 Status - Completed

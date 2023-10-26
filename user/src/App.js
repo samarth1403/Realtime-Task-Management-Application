@@ -22,12 +22,32 @@ import SignupPage from "./Pages/SignupPage";
 import ViewTasksPage from "./Pages/ViewTasksPage";
 import { PrivateRoute } from "./Routing/PrivateRoute";
 import ViewAllAssigneeTasks from "./Components/ViewTasksComponent/ViewAllAssigneeTasks";
+import { socket } from "./socket";
 
 const App = () => {
   const dispatch = useDispatch();
   const { Token } = useSelector((state) => {
     return state.user;
   });
+
+  const handleSocketEvent = useCallback(() => {
+    dispatch(getAllTasks({ Token }));
+  }, [Token, dispatch]);
+
+  useEffect(() => {
+    socket.on("taskCreatedResponse", handleSocketEvent);
+    socket.on("taskDeletedResponse", handleSocketEvent);
+    socket.on("taskUpdatedResponse", handleSocketEvent);
+    socket.on("statusUpdatedResponse", handleSocketEvent);
+
+    return () => {
+      // Clean up the event listeners when the component unmounts
+      socket.off("taskCreatedResponse", handleSocketEvent);
+      socket.off("taskDeletedResponse", handleSocketEvent);
+      socket.off("taskUpdatedResponse", handleSocketEvent);
+      socket.off("statusUpdatedResponse", handleSocketEvent);
+    };
+  }, [handleSocketEvent]);
 
   const stableDispatch = useCallback(() => {
     dispatch(getAllTasks({ Token: Token }));

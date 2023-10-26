@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { getAllTasks, getTask, updateTask } from "../../features/taskSlice";
+import { socket } from "../../socket";
 import Input from "../ReusableComponents/Input";
 import Spinner from "../ReusableComponents/Spinner";
 
@@ -24,7 +25,7 @@ const UpdateTask = () => {
     stableDispatch();
   }, [stableDispatch]);
 
-  const { gotTask } = useSelector((state) => {
+  const { gotTask, isSuccess } = useSelector((state) => {
     return state.task;
   });
 
@@ -64,23 +65,24 @@ const UpdateTask = () => {
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      dispatch(updateTask({ body: values, Token: Token, TaskId }));
+      dispatch(updateTask({ body: values, Token, TaskId }));
+      socket.emit("taskUpdated", {
+        user: values?.creator,
+        message: `${values?.title} Task is Updated by ${user?.name}`,
+        date: Date.now(),
+      });
       setTimeout(() => {
-        dispatch(getAllTasks({ Token }));
-        navigate(-1);
+        if (isSuccess) {
+          navigate(-1);
+        }
       }, 100);
-      formik.resetForm();
+      formik.handleReset();
     },
   });
 
   return (
     <div>
-      {isLoading && (
-        <div className="flex jusfity-center my-8">
-          <Spinner />
-        </div>
-      )}
-      {!isLoading && (
+      {!isLoading ? (
         <div className="flex flex-col flex-no-wrap justify-center items-center">
           <p className="font-roboto font-medium text-2xl mx-2 mb-2 mt-4">
             Update Task
@@ -129,34 +131,42 @@ const UpdateTask = () => {
               </div>
             </div>
             <div className="flex flex-row flex-wrap justify-evenly items-center">
-              <div>
-                <select
-                  className="min-[320px]:w-[250px] sm:w-[250px] h-[60px] font-roboto font-[400] text-xl rounded-[15px] px-4 pr-8 m-4"
-                  id="assignee"
-                  type="text"
-                  name="assignee"
-                  value={formik.values.assignee}
-                  onChange={formik.handleChange("assignee")}
-                  onBlur={formik.handleBlur("assignee")}
-                >
-                  <option defaultValue={gotTask?.assignee?._id}>
-                    {gotTask?.assignee?.name}
-                  </option>
-                  {allUsers?.map((user) => {
-                    return (
-                      <option key={user._id} value={user._id}>
-                        {user.name}
-                      </option>
-                    );
-                  })}
-                </select>
-                <div className="text-black font-bold text-lg text-center">
-                  {formik.touched.assignee && formik.errors.assignee ? (
-                    <div>{formik.errors.assignee}</div>
-                  ) : null}
+              {gotTask?.creator?._id === user?._id || user?.role === "admin" ? (
+                <div>
+                  <select
+                    className="min-[320px]:w-[250px] sm:w-[250px] h-[60px] font-roboto font-[400] text-xl rounded-[15px] px-4 pr-8 m-4"
+                    id="assignee"
+                    type="text"
+                    name="assignee"
+                    value={formik.values.assignee}
+                    onChange={formik.handleChange("assignee")}
+                    onBlur={formik.handleBlur("assignee")}
+                  >
+                    <option defaultValue={gotTask?.assignee?._id}>
+                      {gotTask?.assignee?.name}
+                    </option>
+                    {allUsers?.map((user) => {
+                      if (user?.name !== gotTask?.assignee?.name) {
+                        return (
+                          <option key={user._id} value={user._id}>
+                            {user.name}
+                          </option>
+                        );
+                      }
+                    })}
+                  </select>
+                  <div className="text-black font-bold text-lg text-center">
+                    {formik.touched.assignee && formik.errors.assignee ? (
+                      <div>{formik.errors.assignee}</div>
+                    ) : null}
+                  </div>
                 </div>
-              </div>
-              <div>
+              ) : (
+                <div></div>
+              )}
+
+              {/*For Creator */}
+              {/* <div>
                 <select
                   className="min-[320px]:w-[250px] sm:w-[250px] h-[60px] font-roboto font-[400] text-xl rounded-[15px] px-4 pr-8 m-4"
                   id="creator"
@@ -176,7 +186,7 @@ const UpdateTask = () => {
                     <div>{formik.errors.creator}</div>
                   ) : null}
                 </div>
-              </div>
+              </div> */}
             </div>
             <div className="flex flex-row flex-wrap justify-evenly items-center">
               <div>
@@ -296,6 +306,10 @@ const UpdateTask = () => {
               </button>
             </div>
           </form>
+        </div>
+      ) : (
+        <div className="flex jusfity-center my-8">
+          <Spinner />
         </div>
       )}
     </div>

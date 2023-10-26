@@ -15,7 +15,22 @@ const Header = () => {
   const [notificationAlert, setNotificationAlert] = useState(false);
 
   const stableEffect = useCallback(() => {
-    socket.on("notificationResponse", (data) => {
+    socket.on("taskCreatedResponse", (data) => {
+      if (user?._id === data?.user) {
+        setNotificationAlert(true);
+      }
+    });
+    socket.on("taskDeletedResponse", (data) => {
+      if (user?._id === data?.user) {
+        setNotificationAlert(true);
+      }
+    });
+    socket.on("taskUpdatedResponse", (data) => {
+      if (user?._id === data?.user) {
+        setNotificationAlert(true);
+      }
+    });
+    socket.on("statusUpdatedResponse", (data) => {
       if (user?._id === data?.user) {
         setNotificationAlert(true);
       }
@@ -62,16 +77,19 @@ const Header = () => {
           <Link to="/notifications" className="my-2 mx-4 relative">
             {notificationAlert && (
               <div
+                className="flex justify-center"
                 style={{
-                  width: "14px",
-                  height: "14px",
+                  width: "20px",
+                  height: "20px",
                   borderRadius: "10px",
-                  backgroundColor: "red",
+                  backgroundColor: "blue",
                   position: "absolute",
                   left: "16px",
                   bottom: "16px",
                 }}
-              ></div>
+              >
+                <p className="text-white font-bold">1</p>
+              </div>
             )}
             <BsFillBellFill
               onClick={() => setNotificationAlert(false)}
