@@ -34,7 +34,7 @@ app.use(morgan("dev"));
 const server = http.createServer(app);
 export const socketIO = new Server(server, {
   cors: {
-    origin: "https://project-flow.vercel.app",
+    origin: "https://project-flow-self.vercel.app",
   },
 });
 
